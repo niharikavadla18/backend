@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/medicine")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://pharmacy-frontend-sb2d.onrender.com")
 public class MedicineController {
 
     private final MedicineService medicineService;

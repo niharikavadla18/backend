@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/order")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://pharmacy-frontend-sb2d.onrender.com")
 public class OrderController {
 
     private final OrderService orderService;

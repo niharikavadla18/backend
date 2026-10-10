@@ -10,7 +10,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://pharmacy-frontend-sb2d.onrender.com")
 public class UserController {
 
     private final UserService userService;
