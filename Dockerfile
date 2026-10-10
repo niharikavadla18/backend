@@ -3,23 +3,31 @@ FROM maven:3.9.9-eclipse-temurin-21 AS build
 
 WORKDIR /app
 
-# Copy Maven project files
+# Configure an alternative Maven Central mirror
+RUN mkdir -p /root/.m2 && printf '%s\n' 
+'&lt;settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"&gt;' 
+'  &lt;mirrors&gt;' 
+'    &lt;mirror&gt;' 
+'      &lt;id&gt;google-maven-central&lt;/id&gt;' 
+'      &lt;name&gt;Google Maven Central Mirror&lt;/name&gt;' 
+'      &lt;url&gt;https://maven-central.storage-download.googleapis.com/maven2/&lt;/url&gt;' 
+'      &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;' 
+'    &lt;/mirror&gt;' 
+'  &lt;/mirrors&gt;' 
+'&lt;/settings&gt;' > /root/.m2/settings.xml
+
 COPY pom.xml .
 COPY src ./src
 
-# Build the application using Maven installed in the image
-RUN mvn -B -ntp -Dmaven.wagon.http.retryHandler.count=5 clean package -DskipTests
+RUN mvn -s /root/.m2/settings.xml -B -ntp clean package -DskipTests
 
 # Stage 2: Run the application
 FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
-# Copy the generated Spring Boot JAR
 COPY --from=build /app/target/*.jar app.jar
 
-# Render assigns the actual port through the PORT environment variable
 EXPOSE 8081
 
-# Start the application on Render's assigned port
 ENTRYPOINT ["sh", "-c", "java -Dserver.port=${PORT:-8081} -jar app.jar"]
